@@ -117,6 +117,7 @@ export async function getBookedDatesByCabinId(cabinId) {
   }
 
   // Converting to actual dates to be displayed in the date picker
+
   const bookedDates = data
     .map((booking) => {
       return eachDayOfInterval({
@@ -168,7 +169,7 @@ export async function createGuest(newGuest) {
   return data;
 }
 
-export async function createBooking(newBooking) {
+/*export async function createBooking(newBooking) {
   const { data, error } = await supabase
     .from("bookings")
     .insert([newBooking])
@@ -183,6 +184,7 @@ export async function createBooking(newBooking) {
 
   return data;
 }
+  */
 
 /////////////
 // UPDATE

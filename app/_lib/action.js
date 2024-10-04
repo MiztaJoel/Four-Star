@@ -29,8 +29,36 @@ export async function updateGuest(formData) {
 
   revalidatePath("/account/profile");
 }
+export async function createBooking(bookingData, formData) {
+  //console.log(formData);
+  const session = await auth();
+  if (!session) throw new Error("You must be logged in");
+  //this used when there are alot of formData
+  //Object.entries(formData.entries());
+  const newBooking = {
+    ...bookingData,
+    guestId: session.user.guestId,
+    numGuests: Number(formData.get("numGuests")),
+    observations: formData.get("observations").slice(0, 1000),
+    extrasPrice: 0,
+    totalPrice: bookingData.cabinPrice,
+    isPaid: false,
+    hasBreakfast: false,
+    status: "unconfirmed",
+  };
+  console.log(newBooking);
 
-export async function deleteReservation(bookingId) {
+  const { error } = await supabase.from("bookings").insert([newBooking]);
+
+  if (error) throw new Error("Booking could not be created");
+  revalidatePath(`/cabins/${bookingData.cabinId}`);
+  redirect("/cabins/thankyou");
+}
+
+export async function deleteBooking(bookingId) {
+  // For testing
+  // await new Promise((res) => setTimeout(res, 2000));
+  // throw new Error();
   const session = await auth();
   if (!session) throw new Error("You must be logged in");
 
@@ -39,7 +67,7 @@ export async function deleteReservation(bookingId) {
   // console.log(guestBookingIds);
 
   if (!guestBookingIds.includes(bookingId))
-    throw new Error("You are not allowed todelete this boooking");
+    throw new Error("You are not allowed to delete this boooking");
 
   const { error } = await supabase
     .from("bookings")
