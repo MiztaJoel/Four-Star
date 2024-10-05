@@ -1,4 +1,3 @@
-export const dynamic = "force-dynamic";
 import "@/app/_styles/globals.css";
 
 import Header from "./_components/Header";
